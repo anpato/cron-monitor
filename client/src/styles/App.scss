@@ -1,0 +1,35 @@
+@import 'Theme';
+body {
+  margin: 0;
+  font-family: 'Noto Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+a {
+  text-decoration: none;
+}
+
+.avatar-wrapper {
+  display: flex;
+  align-items: center;
+  align-self: center;
+  justify-content: space-between;
+  padding: 0 2em;
+  width: 20em;
+  margin: auto;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding: 4em 0;
+}

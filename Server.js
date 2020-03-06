@@ -15,9 +15,11 @@ module.exports = class Server {
   init_middleWare() {
     this.middleWare.forEach(middleware => this.app.use(middleware))
   }
+
   init_routes() {
     this.app.use('/api', require('./routes/AppRouter'))
   }
+
   initialize() {
     this.app.disable('x-powered-by')
     this.init_middleWare()
