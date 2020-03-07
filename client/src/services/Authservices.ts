@@ -6,8 +6,7 @@ export const loginUser = async (
 ): Promise<object> => {
   try {
     const resp = await api.post('auth/login', credentials)
-    const { user, token } = resp.data
-    return { user, token }
+    return { status: resp.status, token: resp.data.token }
   } catch (error) {
     throw error
   }

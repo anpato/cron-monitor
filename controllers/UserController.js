@@ -10,13 +10,22 @@ class UserController {
   async show(req, res) {
     const { username, password } = req.body
     const user = await User.findOne({ where: { username } })
-    if (await VerifyPassword(user.dataValues.password_digest, password)) {
+    const canCompare = await VerifyPassword(
+      user.dataValues.password_digest,
+      password,
+      res
+    )
+    if (canCompare && user) {
       const payload = {
         userId: user.dataValues.id,
         username: username
       }
       const token = auth.signToken(payload)
       res.send({ user: payload, token })
+    } else {
+      let err = new Error('Invalid Credentials')
+      err.status = 400
+      res.status(400).send({ error: err })
     }
   }
 

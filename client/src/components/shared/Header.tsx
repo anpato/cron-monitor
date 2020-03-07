@@ -8,6 +8,7 @@ import {
   DropdownMenu,
   ListItem
 } from 'react-md'
+import { clearToken } from '../../services/TokenService'
 
 interface HeaderProps {
   authenticated: boolean
@@ -30,7 +31,11 @@ const Header: React.FC<HeaderProps> = ({
             key={1}
             secondary
             primaryText="Log Out"
-            onClick={() => authenticate(false)}
+            onClick={() => {
+              history.push('/')
+              authenticate(false)
+              clearToken()
+            }}
           />
         ]}
       >
@@ -39,7 +44,13 @@ const Header: React.FC<HeaderProps> = ({
         </AccessibleFakeButton>
       </DropdownMenu>
     ) : (
-      <Button raised secondary onClick={() => history.push('/sign-in')}>
+      <Button
+        raised
+        secondary
+        onClick={() => {
+          history.push('/sign-in')
+        }}
+      >
         Sign In
       </Button>
     )
