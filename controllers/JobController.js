@@ -8,7 +8,7 @@ module.exports = class JobController {
   async index(req, res) {
     try {
       const jobs = await Job.findAll({
-        attributes: ['id', 'expression', 'run_time', 'name'],
+        attributes: ['id', 'status', 'expression', 'run_time', 'name'],
         where: { user_id: res.locals.user.userId }
       })
 
@@ -32,13 +32,15 @@ module.exports = class JobController {
             tableData.headers.push(upperCaser(key))
           }
         })
-        const newVals = Object.values(dataValues).map(val =>
-          typeof val === 'object' ? val.toLocaleString() : val
-        )
-        tableData.data.push({
-          key: [...newVals],
-          id: dataValues.id
-        })
+        const obj = {
+          id: dataValues.id,
+          status: dataValues.status,
+          expression: dataValues.expression,
+          runTime: dataValues.run_time.toLocaleString(),
+          name: dataValues.name
+        }
+
+        tableData.data.push(obj)
       })
       res.send(tableData)
     } catch (error) {

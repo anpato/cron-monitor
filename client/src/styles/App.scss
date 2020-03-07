@@ -1,4 +1,5 @@
 @import 'Theme';
+@import 'Colors';
 body {
   margin: 0;
   font-family: 'Noto Sans', sans-serif;
@@ -32,4 +33,16 @@ form {
   align-items: center;
   height: 100%;
   padding: 4em 0;
+}
+
+.warn {
+  background: $warn;
+}
+
+.danger {
+  background: $danger;
+}
+
+.ok {
+  background: $ok;
 }

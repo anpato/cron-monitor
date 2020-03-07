@@ -26,10 +26,9 @@ const Header: React.FC<HeaderProps> = ({
       <DropdownMenu
         id="User-menu"
         menuItems={[
-          'Jobs',
           <ListItem
             key={1}
-            secondary
+            secondary="true"
             primaryText="Log Out"
             onClick={() => {
               history.push('/')

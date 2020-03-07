@@ -11,7 +11,8 @@ import {
   Button,
   FontIcon,
   AccessibleFakeInkedButton,
-  AccessibleFakeButton
+  AccessibleFakeButton,
+  Chip
 } from 'react-md'
 interface iState {
   jobs: any
@@ -40,6 +41,17 @@ class Dashboard extends Component<iProps, iState> {
     } catch (error) {}
   }
 
+  renderJobStatus = (status: string) => {
+    switch (status.toLowerCase()) {
+      case 'pending':
+        return <Chip label={status} className="warn" />
+      case 'error':
+        return <Chip label={status} className="danger" />
+      case 'ok':
+        return <Chip label={status} className="ok" />
+    }
+  }
+
   displayJobs = () => {
     return (
       <Paper style={styles.container} zDepth={2}>
@@ -62,9 +74,11 @@ class Dashboard extends Component<iProps, iState> {
               // Get Job id here and pass to fake button
               return (
                 <TableRow key={job.id}>
-                  {job.key.map((val: any, index: number) => (
-                    <TableColumn key={index}>{val}</TableColumn>
-                  ))}
+                  <TableColumn>{job.id}</TableColumn>
+                  <TableColumn>{this.renderJobStatus(job.status)}</TableColumn>
+                  <TableColumn>{job.expression}</TableColumn>
+                  <TableColumn>{job.runTime}</TableColumn>
+                  <TableColumn>{job.name}</TableColumn>
                   <TableColumn>
                     <AccessibleFakeButton secondary="true">
                       <FontIcon>build</FontIcon>
