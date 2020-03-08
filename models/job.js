@@ -18,6 +18,18 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: 'Pending',
         allowNull: false
       },
+      timezone: {
+        type: DataTypes.STRING,
+        defaultValue: 'UTC'
+      },
+      wants_notifications: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: true
+      },
+      notification_time: {
+        type: DataTypes.STRING,
+        defaultValue: '5 minutes'
+      },
       created_at: {
         allowNull: false,
         type: DataTypes.DATE
