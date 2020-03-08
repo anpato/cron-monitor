@@ -17,7 +17,7 @@ export const IntegrationOptions = (id: string): tabOptions[] => [
   },
   {
     label: 'Bash',
-    language: 'sh',
+    language: 'shell',
     instructions: `curl --retry 2 https://cronhub.io/ping/${id}`
   },
   {

@@ -32,12 +32,8 @@ export default class JobManagement extends Component<iProps, iState> {
     isValidExpression: false,
     nextRun: ''
   }
-
   static contextType = AuthContext
-
   handleFormChange = (value: ReactText, event: Event, name: string): void => {
-    console.log(name)
-
     this.setState(
       (state: iState) => ({
         ...state,
@@ -50,18 +46,22 @@ export default class JobManagement extends Component<iProps, iState> {
   }
 
   handleSubmit = () => {
-    console.log(this.context)
     const { id, expression, name, nextRun } = this.state
     this.context.addJob({ id, expression, name, runTime: nextRun })
     this.props.history.push('/dashboard')
   }
 
   handleCheckExpression = () => {
-    this.setState({
-      isValidExpression: isValidCron(this.state.expression)
-    })
-
-    this.handleExpectedRunTime()
+    const regex = /(\d+,)+\d+|(\d+(\/|-)\d+)|\d+|\*/
+    if (this.state.expression.match(regex)) {
+      const isValid: boolean = isValidCron(this.state.expression)
+      this.setState(
+        {
+          isValidExpression: isValid
+        },
+        () => this.handleExpectedRunTime()
+      )
+    }
   }
 
   handleExpectedRunTime = () => {
@@ -86,7 +86,6 @@ export default class JobManagement extends Component<iProps, iState> {
       expression,
       isValidExpression
     } = this.state
-    console.log(this.props)
 
     return (
       <Paper className="management-wrapper">

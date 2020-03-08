@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { RouteProps } from 'react-router-dom'
 import { getUserJobs } from '../services/JobServices'
 import { ContextProvider } from '../services/Contexts'
+import Job from '../types/job'
 interface iState {
   jobs: any | null
   dupJobs: any | null
@@ -10,13 +11,6 @@ interface iState {
 
 interface iProps extends RouteProps {
   children: any
-}
-interface Job {
-  id: string
-  name: string
-  status: string | null
-  expression: string
-  runTime: string
 }
 
 export default class PrivateWrapper extends Component<iProps, iState> {
