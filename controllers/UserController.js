@@ -18,7 +18,8 @@ class UserController {
     if (canCompare && user) {
       const payload = {
         userId: user.dataValues.id,
-        username: username
+        username: username,
+        firstName: user.dataValues.first_name
       }
       const token = auth.signToken(payload)
       res.send({ user: payload, token })
@@ -31,13 +32,15 @@ class UserController {
 
   async create(req, res) {
     try {
-      const { username, password, email } = req.body
+      const { username, password, email, firstName, lastName } = req.body
       const password_digest = await HashPassword(password, res)
 
       const user = await User.create({
         username,
         email,
-        password_digest
+        password_digest,
+        firstName,
+        lastName
       })
       res.send(user)
     } catch (error) {

@@ -26,7 +26,6 @@ export const Auth = ({ authenticate, history }) => {
 
   const handleSubmit = async (e, type) => {
     e.preventDefault()
-
     try {
       switch (type) {
         case 'login':
