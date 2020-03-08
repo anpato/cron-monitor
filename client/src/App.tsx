@@ -24,5 +24,4 @@ function App(props: RouteComponentProps) {
     </>
   )
 }
-
 export default withRouter(App)

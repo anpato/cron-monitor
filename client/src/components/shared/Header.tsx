@@ -27,6 +27,13 @@ const Header: React.FC<HeaderProps> = ({
         id="User-menu"
         menuItems={[
           <ListItem
+            key={0}
+            primaryText="Dashboard"
+            onClick={() => {
+              history.push('/dashboard')
+            }}
+          />,
+          <ListItem
             key={1}
             secondary="true"
             primaryText="Log Out"
