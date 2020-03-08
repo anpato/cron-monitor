@@ -28,7 +28,6 @@ module.exports = class JobController {
           expression: dataValues.expression,
           runTime: dataValues.next_run_time.toLocaleString()
         }
-
         tableData.data.push(obj)
       })
       res.send(tableData)

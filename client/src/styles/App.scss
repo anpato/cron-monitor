@@ -46,3 +46,9 @@ form {
 .ok {
   background: $ok;
 }
+
+.no-data-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}

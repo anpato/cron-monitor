@@ -6,8 +6,7 @@ import {
   TableHeader,
   TableBody,
   TableRow,
-  TableColumn,
-  Tooltipped
+  TableColumn
 } from 'react-md'
 import StatusSnack from './StatusSnack'
 
