@@ -1,64 +1,108 @@
-import React, { Component } from 'react'
-import { RouteChildrenProps } from 'react-router-dom'
-import { Paper, TabsContainer, Tabs, Tab, Toolbar } from 'react-md'
-import Highlight from 'react-highlight-js'
-import { v4 as uuid } from 'uuid'
-import { IntegrationOptions, tabOptions } from '../services/IntegrationOptions'
+import React, { MouseEventHandler } from 'react'
+import { TextField, SelectField, Divider, Button, FontIcon } from 'react-md'
+import timeZones from '../services/Timezones'
+import times from '../services/times'
 
-interface iState {
-  id: string
-  name: string
-  expression: string
+interface Iprops {
+  title: string
+  timeZone: string
+  notification: string
+  disabled: boolean
+  handleChange: any
+  checkExpression: any
+  error: boolean
+  expectedRunTime: string
+  history: any
+  onSubmit: MouseEventHandler
 }
 
-interface iProps extends RouteChildrenProps {
-  addJob: Function
+const JobForm = ({
+  title,
+  disabled,
+  handleChange,
+  timeZone,
+  notification,
+  checkExpression,
+  error,
+  expectedRunTime,
+  history,
+  onSubmit
+}: Iprops) => {
+  return (
+    <div className="form-wrapper">
+      <div className="setup">
+        <h3>1. Configure Cron Time</h3>
+        <Divider />
+        <div className="input-wrapper">
+          <TextField
+            id="expression"
+            name="expression"
+            label="Expression"
+            error={error}
+            errorText="Invalid Expression"
+            placeholder="* * * * *"
+            onBlur={checkExpression}
+            onChange={(value, e) => handleChange(value, e, 'expression')}
+          />
+          <SelectField
+            id="timezone"
+            menuItems={timeZones}
+            name="timeZone"
+            onChange={(value, e) => handleChange(value, e, 'timeZone')}
+            defaultValue={timeZones.find((zone: string) => zone === timeZone)}
+          />
+        </div>
+        <div className="check-wrapper">
+          {expectedRunTime ? (
+            <p>
+              Next expected run is:
+              <span className="run-time"> {expectedRunTime}</span>
+            </p>
+          ) : null}
+        </div>
+      </div>
+      <div className="alerts">
+        <h3>2. Notifications Preference</h3>
+        <Divider />
+        <div className="input-wrapper ">
+          <SelectField
+            id="warning-times"
+            menuItems={times}
+            name="notification"
+            onChange={(value, e) => handleChange(value, e, 'notification')}
+            defaultValue={times.find((time: string) => time === notification)}
+          />
+          <p>after the job does not run on schedule</p>
+        </div>
+      </div>
+      <div className="label-job">
+        <h3>3. Name and Save</h3>
+        <Divider />
+        <div className="input-wrapper ">
+          <TextField
+            id="job-title"
+            name="name"
+            value={title}
+            onChange={(value, e) => handleChange(value, e, 'name')}
+          />
+          <Button
+            raised
+            secondary
+            disabled={disabled}
+            onClick={onSubmit}
+            iconChildren={
+              <FontIcon style={{ color: '#f8f8f8' }}>check</FontIcon>
+            }
+          >
+            Save
+          </Button>
+          <Button raised onClick={() => history.push('/dashboard')}>
+            Cancel
+          </Button>
+        </div>
+      </div>
+    </div>
+  )
 }
 
-export default class JobForm extends Component<iProps, iState> {
-  state: iState = {
-    id: uuid(),
-    name: 'My New Cron',
-    expression: ''
-  }
-  render() {
-    return (
-      <Paper style={{ width: '80%', margin: '2em auto' }}>
-        <TabsContainer
-          toolbar={<Toolbar themed title={this.state.name} />}
-          style={{ padding: '2em' }}
-          panelStyle={{ height: 'auto', overflow: 'hidden' }}
-          slideStyle={{ overflow: 'hidden' }}
-        >
-          <Tabs tabId="Overview">
-            <Tab label="How to integrate" className="text-visible">
-              <TabsContainer
-                themed
-                panelStyle={{ height: 'auto', overflow: 'hidden' }}
-                slideStyle={{ overflow: 'hidden' }}
-              >
-                <Tabs tabId="integration" centered>
-                  {IntegrationOptions(this.state.id).map(
-                    (option: tabOptions) => (
-                      <Tab label={option.label} className="text-visible">
-                        <div className="instructions-wrapper">
-                          <Highlight
-                            language={option.language}
-                            style={{ padding: '1em' }}
-                          >
-                            {option.instructions}
-                          </Highlight>
-                        </div>
-                      </Tab>
-                    )
-                  )}
-                </Tabs>
-              </TabsContainer>
-            </Tab>
-            <Tab label="How to integrate" className="text-visible"></Tab>
-          </Tabs>
-        </TabsContainer>
-      </Paper>
-    )
-  }
-}
+export default JobForm

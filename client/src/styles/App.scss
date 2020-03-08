@@ -73,3 +73,66 @@ form {
   border-radius: 6px;
   padding: 4em 1em;
 }
+
+.management-wrapper {
+  width: 80%;
+  margin: 2em auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 80vh;
+}
+
+.form-wrapper {
+  margin-top: 2em;
+}
+
+.input-wrapper {
+  display: flex;
+  justify-content: space-between;
+  padding: 1em 3em;
+  width: 60%;
+  #timezone-menu {
+    width: 40%;
+  }
+  .md-text-field-container {
+    width: 40%;
+
+    input {
+      font-size: 1.2rem;
+    }
+  }
+}
+
+.alerts {
+  .input-wrapper {
+    align-items: flex-end;
+  }
+}
+.setup {
+  .input-wrapper {
+    align-items: center;
+  }
+}
+
+.alerts,
+.setup,
+.label-job {
+  display: flex;
+  flex-direction: column;
+}
+.alerts,
+.label-job {
+  .input-wrapper {
+    justify-content: flex-start;
+    p,
+    button {
+      margin-left: 1em;
+    }
+  }
+}
+.check-wrapper {
+  width: 100%;
+}
+.run-time {
+  color: $md-primary-color;
+}

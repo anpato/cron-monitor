@@ -4,7 +4,7 @@ import Home from '../pages/Home'
 import { Auth } from '../pages/Auth'
 import ProtectedRoute from './ProtectedRoute'
 import Dashboard from '../pages/Dashboard'
-import JobForm from '../components/JobForm'
+import JobManagement from '../pages/JobManagement'
 import PrivateWrapper from '../components/PrivateWrapper'
 interface RouteProps {
   authenticated: boolean
@@ -35,7 +35,7 @@ export default ({ authenticate, authenticated }: RouteProps) => (
       <ProtectedRoute
         path="/jobs/add"
         authenticated={authenticated}
-        component={JobForm}
+        component={JobManagement}
       />
     </Switch>
   </main>

@@ -1,12 +1,11 @@
 import React from 'react'
 import {
-  AccessibleFakeButton,
-  FontIcon,
   DataTable,
   TableHeader,
   TableBody,
   TableRow,
-  TableColumn
+  TableColumn,
+  Button
 } from 'react-md'
 import StatusSnack from './StatusSnack'
 
@@ -43,9 +42,7 @@ const JobTable = ({ jobs }: iProps) => {
               <TableColumn>{job.expression}</TableColumn>
               <TableColumn>{job.runTime}</TableColumn>
               <TableColumn>
-                <AccessibleFakeButton secondary="true">
-                  <FontIcon>build</FontIcon>
-                </AccessibleFakeButton>
+                <Button icon>build</Button>
               </TableColumn>
             </TableRow>
           )

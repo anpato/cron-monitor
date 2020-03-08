@@ -11,6 +11,13 @@ interface iState {
 interface iProps extends RouteProps {
   children: any
 }
+interface Job {
+  id: string
+  name: string
+  status: string | null
+  expression: string
+  runTime: string
+}
 
 export default class PrivateWrapper extends Component<iProps, iState> {
   state: iState = {
@@ -50,9 +57,22 @@ export default class PrivateWrapper extends Component<iProps, iState> {
     })
   }
 
-  addJob = (job: any) => {
+  addJob = ({ id, name, expression, runTime, status }: Job) => {
+    const jobData = {
+      data: [
+        ...this.state.jobs.data,
+        {
+          id,
+          name,
+          expression,
+          runTime: new Date(runTime).toLocaleString(),
+          status: 'Pending'
+        }
+      ],
+      headers: this.state.jobs.headers
+    }
     this.setState({
-      jobs: { ...this.state.jobs, data: { ...this.state.jobs.data, ...job } }
+      jobs: jobData
     })
   }
 
