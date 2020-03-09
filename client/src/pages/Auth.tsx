@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, ReactText,  FormEvent } from 'react'
 import {
   Paper,
   TextField,
@@ -10,6 +10,7 @@ import {
 } from 'react-md'
 import { registerUser, loginUser } from '../services/Authservices'
 import { setToken } from '../services/TokenService'
+import {  RouteChildrenProps } from 'react-router-dom'
 
 const initialState = {
   username: '',
@@ -17,19 +18,28 @@ const initialState = {
   email: ''
 }
 
-export const Auth = ({ authenticate, history }) => {
+interface Iprops extends RouteChildrenProps {
+  authenticate: Function
+}
+
+interface AuthResp   {
+  user: any
+  token: string
+}
+
+export const Auth = ({ authenticate, history }:Iprops) => {
   const [userCredentials, setUserCreds] = useState(initialState)
 
-  const handleChange = (value, e) => {
-    setUserCreds({ ...userCredentials, [e.target.name]: value })
+  const handleChange = (value:ReactText, e:Event, name:string) => {
+    // setUserCreds({ ...userCredentials, [e.target.name]: value })
   }
 
-  const handleSubmit = async (e, type) => {
+  const handleSubmit = async (e:FormEvent, type:string) => {
     e.preventDefault()
     try {
       switch (type) {
         case 'login':
-          loginUser(userCredentials).then(res => {
+          loginUser(userCredentials).then((res:any):void => {
             setToken(res.token)
             authenticate(true)
             return history.push('/dashboard')
@@ -59,7 +69,7 @@ export const Auth = ({ authenticate, history }) => {
                 label="Username"
                 style={styles.inputStyle}
                 value={userCredentials.username}
-                onChange={handleChange}
+                onChange={(val, e)=> handleChange(val,e, 'username')}
                 leftIcon={<FontIcon>person</FontIcon>}
               />
               <TextField
@@ -67,7 +77,7 @@ export const Auth = ({ authenticate, history }) => {
                 label="Password"
                 type="password"
                 value={userCredentials.password}
-                onChange={handleChange}
+                onChange={(val, e)=> handleChange(val,e, 'password')}
                 style={styles.inputStyle}
                 leftIcon={<FontIcon>remove_red_eye</FontIcon>}
               />
@@ -85,7 +95,7 @@ export const Auth = ({ authenticate, history }) => {
                 name="username"
                 label="Username"
                 value={userCredentials.username}
-                onChange={handleChange}
+                onChange={(val, e)=> handleChange(val,e, 'username')}
                 style={styles.inputStyle}
               />
               <TextField
@@ -93,13 +103,13 @@ export const Auth = ({ authenticate, history }) => {
                 label="Email"
                 type="email"
                 value={userCredentials.email}
-                onChange={handleChange}
+                onChange={(val, e)=> handleChange(val,e, 'email')}
                 style={styles.inputStyle}
               />
               <TextField
                 name="password"
                 label="Password"
-                onChange={handleChange}
+                onChange={(val, e)=> handleChange(val,e, 'password')}
                 value={userCredentials.password}
                 type="password"
                 style={styles.inputStyle}
