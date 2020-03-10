@@ -8,29 +8,30 @@ import {
   Button
 } from 'react-md'
 import StatusSnack from './StatusSnack'
+import { RouteChildrenProps } from 'react-router-dom'
 
 interface Jobs {
   headers: string[]
   data: any[]
 }
 
-interface iProps {
+interface iProps extends RouteChildrenProps<any> {
   jobs: Jobs
 }
 
-const JobTable = ({ jobs }: iProps) => {
+const JobTable: React.SFC<iProps> = (props: iProps) => {
   return (
     <DataTable plain>
       <TableHeader>
         <TableRow>
-          {jobs.headers.map((header: string) => (
+          {props.jobs.headers.map((header: string) => (
             <TableColumn key={header}>{header}</TableColumn>
           ))}
           <TableColumn>Edit</TableColumn>
         </TableRow>
       </TableHeader>
       <TableBody>
-        {jobs.data.map((job: any) => {
+        {props.jobs.data.map((job: any) => {
           // Get Job id here and pass to fake button
           return (
             <TableRow key={job.id}>
@@ -42,7 +43,17 @@ const JobTable = ({ jobs }: iProps) => {
               <TableColumn>{job.expression}</TableColumn>
               <TableColumn>{job.runTime}</TableColumn>
               <TableColumn>
-                <Button icon>build</Button>
+                <Button
+                  icon
+                  onClick={() =>
+                    props.history.push({
+                      pathname: `/jobs/edit/${job.id}`,
+                      state: { job }
+                    })
+                  }
+                >
+                  build
+                </Button>
               </TableColumn>
             </TableRow>
           )

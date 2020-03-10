@@ -2,11 +2,13 @@ import React, { MouseEventHandler } from 'react'
 import { TextField, SelectField, Divider, Button, FontIcon } from 'react-md'
 import timeZones from '../services/Timezones'
 import times from '../services/times'
+import { RouteChildrenProps } from 'react-router-dom'
 
 interface Iprops {
   title: string
   timeZone: string
   notification: string
+  expression: string
   disabled: boolean
   handleChange: any
   checkExpression: any
@@ -20,6 +22,7 @@ const JobForm = ({
   title,
   disabled,
   handleChange,
+  expression,
   timeZone,
   notification,
   checkExpression,
@@ -42,6 +45,7 @@ const JobForm = ({
             errorText="Invalid Expression"
             placeholder="* * * * *"
             onBlur={checkExpression}
+            defaultValue={expression}
             onChange={(value, e) => handleChange(value, e, 'expression')}
           />
           <SelectField

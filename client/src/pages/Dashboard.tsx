@@ -4,7 +4,7 @@ import { Paper, Button, Toolbar, TextField } from 'react-md'
 import JobTable from '../components/JobTable'
 import AuthContext from '../services/Contexts'
 
-const Dashboard = ({ history }: RouteChildrenProps) => {
+const Dashboard = ({ history, location, match }: RouteChildrenProps) => {
   const { jobs, searchJobs } = useContext(AuthContext)
 
   return (
@@ -28,7 +28,12 @@ const Dashboard = ({ history }: RouteChildrenProps) => {
         ]}
       ></Toolbar>
       {jobs?.data.length ? (
-        <JobTable jobs={jobs} />
+        <JobTable
+          jobs={jobs}
+          history={history}
+          location={location}
+          match={match}
+        />
       ) : (
         <div className="no-data-wrapper">
           <h3>No Jobs</h3>

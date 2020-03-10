@@ -1,5 +1,6 @@
 const { Job, User } = require('../models')
 const UpperCaser = require('../middleware/functions/Uppercaser')
+const MapJobValues = require('../middleware/functions/MapJobValues')
 module.exports = class JobController {
   constructor() {
     this.path = '/jobs'
@@ -8,28 +9,20 @@ module.exports = class JobController {
   async index(req, res) {
     try {
       const jobs = await Job.findAll({
-        attributes: ['id', 'name', 'status', 'expression', 'next_run_time'],
+        attributes: [
+          'id',
+          'name',
+          'status',
+          'expression',
+          'next_run_time',
+          'timezone',
+          'notification_time',
+          'wants_notifications'
+        ],
         where: { user_id: res.locals.user.userId }
       })
-      let tableData = {
-        headers: [],
-        data: []
-      }
-      jobs.forEach(({ dataValues }) => {
-        Object.keys(dataValues).forEach(key => {
-          if (!tableData.headers.includes(UpperCaser(key))) {
-            tableData.headers.push(UpperCaser(key))
-          }
-        })
-        const obj = {
-          id: dataValues.id,
-          name: dataValues.name,
-          status: dataValues.status,
-          expression: dataValues.expression,
-          runTime: dataValues.next_run_time.toLocaleString()
-        }
-        tableData.data.push(obj)
-      })
+
+      const tableData = MapJobValues(jobs, UpperCaser)
       res.send(tableData)
     } catch (error) {
       throw error
@@ -57,10 +50,31 @@ module.exports = class JobController {
       const newJob = await Job.create(job)
       await newJob.setUser(user)
       res.send(newJob)
-    } catch (error) {}
+    } catch (error) {
+      throw error
+    }
   }
 
-  async update(req, res) {}
+  async update(req, res) {
+    try {
+      const newRunTime = new Date(req.body.runTime)
+      console.log(newRunTime)
+      const job = await Job.update(
+        { ...req.body, newRunTime },
+        {
+          where: {
+            id: req.params.job_id
+          },
+          returning: true
+        }
+      )
+
+      const newJob = MapJobValues(job[1], UpperCaser)
+      res.send(newJob.data[0])
+    } catch (error) {
+      throw error
+    }
+  }
 
   async destroy(req, res) {}
 }

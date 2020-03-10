@@ -51,23 +51,38 @@ export default class PrivateWrapper extends Component<iProps, iState> {
     })
   }
 
-  addJob = ({ id, name, expression, runTime, status }: Job) => {
-    const jobData = {
-      data: [
-        ...this.state.jobs.data,
-        {
-          id,
-          name,
-          expression,
-          runTime: new Date(runTime).toLocaleString(),
-          status: 'Pending'
-        }
-      ],
-      headers: this.state.jobs.headers
+  addJob = (
+    { id, name, expression, runTime, status }: Job,
+    update: boolean
+  ) => {
+    let jobData
+    if (update) {
+      const prevJobs = this.state.jobs.data.filter((job: Job) => {
+        if (id !== job.id) return job
+      })
+      jobData = {
+        data: [...prevJobs, { id, name, expression, runTime, status }],
+        headers: this.state.jobs.headers
+      }
+      this.setState({ jobs: jobData })
+    } else {
+      jobData = {
+        data: [
+          ...this.state.jobs.data,
+          {
+            id,
+            name,
+            expression,
+            runTime: new Date(runTime).toLocaleString(),
+            status: 'Pending'
+          }
+        ],
+        headers: this.state.jobs.headers
+      }
+      this.setState({
+        jobs: jobData
+      })
     }
-    this.setState({
-      jobs: jobData
-    })
   }
 
   render() {

@@ -37,6 +37,11 @@ export default ({ authenticate, authenticated }: RouteProps) => (
         authenticated={authenticated}
         component={JobManagement}
       />
+      <ProtectedRoute
+        path="/jobs/edit/:job_id"
+        authenticated={authenticated}
+        component={JobManagement}
+      />
     </Switch>
   </main>
 )

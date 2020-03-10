@@ -1,5 +1,5 @@
 import React, { Component, ReactText } from 'react'
-import { RouteChildrenProps } from 'react-router-dom'
+import { RouteChildrenProps, RouteComponentProps } from 'react-router-dom'
 import { Paper, TabsContainer, Tabs, Tab, Toolbar, FontIcon } from 'react-md'
 import { v4 as uuid } from 'uuid'
 import IntegrationContainer from '../components/IntegrationContainer'
@@ -7,6 +7,8 @@ import JobForm from '../components/JobForm'
 import cronParser from 'cron-parser'
 import { isValidCron } from 'cron-validator'
 import AuthContext from '../services/Contexts'
+import Job from '../types/job'
+import { updateJob } from '../services/JobServices'
 
 interface iState {
   id: string
@@ -16,9 +18,13 @@ interface iState {
   notification: string
   isValidExpression: boolean
   nextRun: string
+  update: boolean
+}
+interface RouterState {
+  job: Job
 }
 
-interface iProps extends RouteChildrenProps {
+interface iProps extends RouteComponentProps<{}, any, RouterState> {
   addJob: Function
 }
 
@@ -30,9 +36,30 @@ export default class JobManagement extends Component<iProps, iState> {
     notification: '5 minutes',
     timeZone: 'UTC',
     isValidExpression: false,
-    nextRun: ''
+    nextRun: '',
+    update: false
   }
   static contextType = AuthContext
+
+  componentDidMount() {
+    if (this.props.location.state) {
+      const jobData = this.props.location.state
+      let job = jobData.job
+      const { id, name, expression, runTime } = job
+      console.log(job)
+      this.setState(
+        {
+          expression: expression,
+          id,
+          name,
+          nextRun: runTime,
+          update: true
+        },
+        () => this.setState({ isValidExpression: true })
+      )
+    }
+  }
+
   handleFormChange = (value: ReactText, event: Event, name: string): void => {
     this.setState(
       (state: iState) => ({
@@ -45,10 +72,29 @@ export default class JobManagement extends Component<iProps, iState> {
       this.handleExpectedRunTime()
   }
 
-  handleSubmit = () => {
-    const { id, expression, name, nextRun } = this.state
-    this.context.addJob({ id, expression, name, runTime: nextRun })
-    this.props.history.push('/dashboard')
+  handleSubmit = (e: any): void => {
+    const { id, expression, name, nextRun, update } = this.state
+    e.preventDefault()
+    if (update) {
+      updateJob(id, { id, expression, name, runTime: nextRun }).then(
+        (res: Job) => {
+          this.context.addJob(
+            {
+              id: res.id,
+              expression: res.expression,
+              name: res.name,
+              runTime: nextRun,
+              status: res.status
+            },
+            true
+          )
+          return this.props.history.push('/dashboard')
+        }
+      )
+    } else {
+      this.context.addJob({ id, expression, name, runTime: nextRun }, false)
+      this.props.history.push('/dashboard')
+    }
   }
 
   handleCheckExpression = () => {
@@ -86,7 +132,7 @@ export default class JobManagement extends Component<iProps, iState> {
       expression,
       isValidExpression
     } = this.state
-
+    console.log(this.props)
     return (
       <Paper className="management-wrapper">
         <TabsContainer
@@ -106,6 +152,7 @@ export default class JobManagement extends Component<iProps, iState> {
                 disabled={isValidExpression ? false : true}
                 handleChange={this.handleFormChange}
                 notification={notification}
+                expression={expression}
                 timeZone={timeZone}
                 error={expression.length && !isValidExpression ? true : false}
                 checkExpression={this.handleCheckExpression}
