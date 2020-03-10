@@ -4,7 +4,7 @@ export default interface Job {
   status?: string | null
   expression: string
   runTime: string
-  next_run_time?: Date
-  timezone?: string
-  notification_time?: string
+  timezone: string
+  notificationTime?: string
+  wantsNotifications: boolean
 }

@@ -4,6 +4,7 @@ import Job from '../types/job'
 export const getUserJobs = async (): Promise<Job[]> => {
   try {
     const resp = await api.get('/jobs/list')
+    console.log(resp.data)
     return resp.data
   } catch (error) {
     throw error

@@ -1,19 +1,26 @@
 import React, { MouseEventHandler } from 'react'
-import { TextField, SelectField, Divider, Button, FontIcon } from 'react-md'
+import {
+  TextField,
+  SelectField,
+  Divider,
+  Button,
+  FontIcon,
+  SelectionControl
+} from 'react-md'
 import timeZones from '../services/Timezones'
 import times from '../services/times'
-import { RouteChildrenProps } from 'react-router-dom'
 
 interface Iprops {
   title: string
   timeZone: string
-  notification: string
+  notification?: string
   expression: string
   disabled: boolean
   handleChange: any
   checkExpression: any
   error: boolean
   expectedRunTime: string
+  wantsNotifications: boolean
   history: any
   onSubmit: MouseEventHandler
 }
@@ -29,6 +36,7 @@ const JobForm = ({
   error,
   expectedRunTime,
   history,
+  wantsNotifications,
   onSubmit
 }: Iprops) => {
   return (
@@ -45,15 +53,15 @@ const JobForm = ({
             errorText="Invalid Expression"
             placeholder="* * * * *"
             onBlur={checkExpression}
-            defaultValue={expression}
+            value={expression}
             onChange={(value, e) => handleChange(value, e, 'expression')}
           />
           <SelectField
             id="timezone"
             menuItems={timeZones}
             name="timeZone"
-            onChange={(value, e) => handleChange(value, e, 'timeZone')}
-            defaultValue={timeZones.find((zone: string) => zone === timeZone)}
+            onChange={(value, e) => handleChange(value, e, 'timezone')}
+            value={timeZone}
           />
         </div>
         <div className="check-wrapper">
@@ -68,15 +76,29 @@ const JobForm = ({
       <div className="alerts">
         <h3>2. Notifications Preference</h3>
         <Divider />
-        <div className="input-wrapper ">
-          <SelectField
-            id="warning-times"
-            menuItems={times}
-            name="notification"
-            onChange={(value, e) => handleChange(value, e, 'notification')}
-            defaultValue={times.find((time: string) => time === notification)}
+        <div className="selection-control-wrapper">
+          <SelectionControl
+            id="notifications"
+            type="switch"
+            labelBefore
+            label={`Turn ${wantsNotifications ? 'off' : 'on'} Notifications`}
+            name="wantsNotifications"
+            checked={wantsNotifications}
+            value={wantsNotifications.toString()}
+            onChange={(value, e) =>
+              handleChange(value, e, 'wantsNotifications')
+            }
           />
-          <p>after the job does not run on schedule</p>
+          <div className="input-wrapper ">
+            <SelectField
+              id="warning-times"
+              menuItems={times}
+              name="notification"
+              onChange={(value, e) => handleChange(value, e, 'notification')}
+              value={notification}
+            />
+            <p>after the job does not run on schedule</p>
+          </div>
         </div>
       </div>
       <div className="label-job">

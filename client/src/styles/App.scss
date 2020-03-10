@@ -16,6 +16,11 @@ a {
   text-decoration: none;
 }
 
+.table-wrapper {
+  margin: 6em auto 0 auto;
+  width: 80%;
+}
+
 .avatar-wrapper {
   display: flex;
   align-items: center;
@@ -135,4 +140,26 @@ form {
 }
 .run-time {
   color: $md-primary-color;
+}
+
+.selection-control-wrapper {
+  display: flex;
+  flex-direction: column;
+  padding: 1em 3em;
+  .input-wrapper {
+    padding-left: 0;
+  }
+}
+
+@media (max-width: 1024px) {
+  .table-wrapper {
+    width: 90%;
+  }
+}
+
+@media (max-width: 500px) {
+  .table-wrapper {
+    width: 100%;
+    margin: 0;
+  }
 }

@@ -14,14 +14,17 @@ interface iState {
   id: string
   name: string
   expression: string
-  timeZone: string
-  notification: string
+  timezone: string
+  notification?: string
   isValidExpression: boolean
+  wantsNotifications: boolean
   nextRun: string
   update: boolean
+  currentTarget: number | null
 }
 interface RouterState {
   job: Job
+  index: number
 }
 
 interface iProps extends RouteComponentProps<{}, any, RouterState> {
@@ -34,26 +37,40 @@ export default class JobManagement extends Component<iProps, iState> {
     name: 'My New Cron',
     expression: '',
     notification: '5 minutes',
-    timeZone: 'UTC',
+    wantsNotifications: false,
+    timezone: 'UTC',
     isValidExpression: false,
     nextRun: '',
-    update: false
+    update: false,
+    currentTarget: null
   }
   static contextType = AuthContext
 
   componentDidMount() {
     if (this.props.location.state) {
       const jobData = this.props.location.state
+      console.log(jobData)
       let job = jobData.job
-      const { id, name, expression, runTime } = job
-      console.log(job)
+      const {
+        id,
+        name,
+        expression,
+        runTime,
+        wantsNotifications,
+        notificationTime,
+        timezone
+      } = job
       this.setState(
         {
           expression: expression,
           id,
           name,
           nextRun: runTime,
-          update: true
+          wantsNotifications: wantsNotifications,
+          notification: notificationTime,
+          timezone,
+          update: true,
+          currentTarget: jobData.index
         },
         () => this.setState({ isValidExpression: true })
       )
@@ -61,36 +78,50 @@ export default class JobManagement extends Component<iProps, iState> {
   }
 
   handleFormChange = (value: ReactText, event: Event, name: string): void => {
-    this.setState(
-      (state: iState) => ({
-        ...state,
-        [name]: value
-      }),
-      () => this.handleCheckExpression()
-    )
-    if (this.state.expression.length && this.state.isValidExpression)
-      this.handleExpectedRunTime()
+    this.setState((state: iState) => ({
+      ...state,
+      [name]: value
+    }))
   }
 
   handleSubmit = (e: any): void => {
-    const { id, expression, name, nextRun, update } = this.state
+    const {
+      id,
+      expression,
+      name,
+      nextRun,
+      update,
+      notification,
+      wantsNotifications,
+      timezone
+    } = this.state
     e.preventDefault()
     if (update) {
-      updateJob(id, { id, expression, name, runTime: nextRun }).then(
-        (res: Job) => {
-          this.context.addJob(
-            {
-              id: res.id,
-              expression: res.expression,
-              name: res.name,
-              runTime: nextRun,
-              status: res.status
-            },
-            true
-          )
-          return this.props.history.push('/dashboard')
-        }
-      )
+      updateJob(id, {
+        id,
+        expression,
+        name,
+        runTime: nextRun,
+        notificationTime: notification,
+        wantsNotifications,
+        timezone
+      }).then((res: Job) => {
+        this.context.addJob(
+          {
+            id: res.id,
+            expression: res.expression,
+            name: res.name,
+            runTime: res.runTime,
+            status: res.status,
+            notificationTime: notification,
+            wantsNotifications,
+            timezone: res.timezone
+          },
+          true,
+          this.state.currentTarget
+        )
+        return this.props.history.push('/dashboard')
+      })
     } else {
       this.context.addJob({ id, expression, name, runTime: nextRun }, false)
       this.props.history.push('/dashboard')
@@ -113,7 +144,7 @@ export default class JobManagement extends Component<iProps, iState> {
   handleExpectedRunTime = () => {
     const options = {
       currentDate: Date.now(),
-      tz: this.state.timeZone
+      tz: this.state.timezone
     }
     if (this.state.expression.length) {
       const interval = cronParser.parseExpression(
@@ -128,11 +159,11 @@ export default class JobManagement extends Component<iProps, iState> {
     const {
       notification,
       name,
-      timeZone,
+      timezone,
       expression,
-      isValidExpression
+      isValidExpression,
+      wantsNotifications
     } = this.state
-    console.log(this.props)
     return (
       <Paper className="management-wrapper">
         <TabsContainer
@@ -153,8 +184,9 @@ export default class JobManagement extends Component<iProps, iState> {
                 handleChange={this.handleFormChange}
                 notification={notification}
                 expression={expression}
-                timeZone={timeZone}
+                timeZone={timezone}
                 error={expression.length && !isValidExpression ? true : false}
+                wantsNotifications={wantsNotifications}
                 checkExpression={this.handleCheckExpression}
                 expectedRunTime={this.state.nextRun}
                 history={this.props.history}

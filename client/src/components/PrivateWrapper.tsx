@@ -7,6 +7,14 @@ interface iState {
   jobs: any | null
   dupJobs: any | null
   isLoading: boolean
+  searchval: string
+}
+
+interface JobObject {
+  name: string
+  status: string
+  expression: string
+  runTime: string
 }
 
 interface iProps extends RouteProps {
@@ -17,7 +25,8 @@ export default class PrivateWrapper extends Component<iProps, iState> {
   state: iState = {
     jobs: null,
     dupJobs: null,
-    isLoading: false
+    isLoading: false,
+    searchval: ''
   }
   dups = null
   componentDidMount() {
@@ -32,56 +41,76 @@ export default class PrivateWrapper extends Component<iProps, iState> {
     } catch (error) {}
   }
 
-  searchJobs = (value: any) => {
+  filterData = (value: string) => {
     const dups = this.state.dupJobs
-    const filtered = this.state.jobs.data.filter((val: any) => {
-      switch (true) {
-        case val.name.toLowerCase().includes(value):
-          return val
-        case val.expression.toLowerCase().includes(value):
-          return val
-        case val.status.toLowerCase().includes(value):
-          return val
-        case val.runTime.toLowerCase().includes(value):
-          return val
+
+    const filtered = this.state.jobs.data.filter((val: JobObject) => {
+      let name: string = val.name.toLowerCase()
+      let expression: string = val.expression.toLowerCase()
+      let status: string = val.status.toLowerCase()
+      let runTime: string = val.runTime.toLowerCase()
+      let searchVal: string = value.toLowerCase()
+      if (
+        name.includes(searchVal) ||
+        expression.includes(searchVal) ||
+        status.includes(searchVal) ||
+        runTime.includes(searchVal)
+      ) {
+        return val
       }
     })
     this.setState({
-      jobs: value.length ? { ...this.state.jobs, data: filtered } : dups
+      jobs: value ? { ...this.state.jobs, data: filtered } : dups
     })
   }
 
-  addJob = (
-    { id, name, expression, runTime, status }: Job,
-    update: boolean
-  ) => {
-    let jobData
+  searchJobs = (value: any) => {
+    this.setState({ searchval: value }, () =>
+      this.filterData(this.state.searchval)
+    )
+  }
+
+  updateJob = (job: Job, index: number): void =>
+    this.setState((state: iState) => {
+      state.jobs.data[index] = job
+      return state
+    })
+
+  createJob = ({
+    id,
+    name,
+    expression,
+    runTime,
+    notificationTime,
+    wantsNotifications,
+    timezone
+  }: Job): void => {
+    let jobData = {
+      data: [
+        ...this.state.jobs.data,
+        {
+          id,
+          name,
+          expression,
+          runTime: new Date(runTime).toLocaleString(),
+          status: 'Pending',
+          notificationTime,
+          wantsNotifications,
+          timezone
+        }
+      ],
+      headers: this.state.jobs.headers
+    }
+    this.setState({
+      jobs: jobData
+    })
+  }
+
+  addJob = (job: Job, update: boolean, index: number) => {
     if (update) {
-      const prevJobs = this.state.jobs.data.filter((job: Job) => {
-        if (id !== job.id) return job
-      })
-      jobData = {
-        data: [...prevJobs, { id, name, expression, runTime, status }],
-        headers: this.state.jobs.headers
-      }
-      this.setState({ jobs: jobData })
+      this.updateJob(job, index)
     } else {
-      jobData = {
-        data: [
-          ...this.state.jobs.data,
-          {
-            id,
-            name,
-            expression,
-            runTime: new Date(runTime).toLocaleString(),
-            status: 'Pending'
-          }
-        ],
-        headers: this.state.jobs.headers
-      }
-      this.setState({
-        jobs: jobData
-      })
+      this.createJob(job)
     }
   }
 

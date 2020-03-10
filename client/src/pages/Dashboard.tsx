@@ -8,7 +8,7 @@ const Dashboard = ({ history, location, match }: RouteChildrenProps) => {
   const { jobs, searchJobs } = useContext(AuthContext)
 
   return (
-    <Paper style={styles.container} zDepth={2}>
+    <Paper className="table-wrapper" zDepth={2}>
       <Toolbar
         title="Current Jobs"
         prominent
@@ -43,9 +43,3 @@ const Dashboard = ({ history, location, match }: RouteChildrenProps) => {
   )
 }
 export default Dashboard
-const styles = {
-  container: {
-    margin: ' 6em auto 0 auto',
-    width: '70%'
-  }
-}

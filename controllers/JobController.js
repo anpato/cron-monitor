@@ -57,17 +57,28 @@ module.exports = class JobController {
 
   async update(req, res) {
     try {
-      const newRunTime = new Date(req.body.runTime)
-      console.log(newRunTime)
-      const job = await Job.update(
-        { ...req.body, newRunTime },
-        {
-          where: {
-            id: req.params.job_id
-          },
-          returning: true
-        }
-      )
+      const {
+        name,
+        expression,
+        runTime,
+        notificationTime,
+        wantsNotifications,
+        timezone
+      } = req.body
+      const options = {
+        name,
+        expression,
+        next_run_time: new Date(runTime),
+        timezone,
+        wants_notifications: wantsNotifications,
+        notification_time: notificationTime
+      }
+      const job = await Job.update(options, {
+        where: {
+          id: req.params.job_id
+        },
+        returning: true
+      })
 
       const newJob = MapJobValues(job[1], UpperCaser)
       res.send(newJob.data[0])

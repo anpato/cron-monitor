@@ -4,17 +4,18 @@ module.exports = (data, UpperCaser) => {
     data: []
   }
   data.forEach(({ dataValues }) => {
-    const excludedKeys = [
-      'timezone',
-      'wants_notifications',
-      'notification_time'
-    ]
+    const excludedKeys = ['timezone', 'notification_time']
     Object.keys(dataValues).forEach(key => {
       if (
         !tableData.headers.includes(UpperCaser(key)) &&
-        !excludedKeys.includes(key)
+        !excludedKeys.includes(key) &&
+        !tableData.headers.includes('Notifications')
       ) {
-        tableData.headers.push(UpperCaser(key))
+        if (key === 'wants_notifications') {
+          tableData.headers.push('Notifications')
+        } else {
+          tableData.headers.push(UpperCaser(key))
+        }
       }
     })
     const obj = {
@@ -24,7 +25,8 @@ module.exports = (data, UpperCaser) => {
       expression: dataValues.expression,
       runTime: dataValues.next_run_time.toLocaleString(),
       wantsNotifications: dataValues.wants_notifications,
-      notificationTime: dataValues.notification_time
+      notificationTime: dataValues.notification_time,
+      timezone: dataValues.timezone
     }
     tableData.data.push(obj)
   })

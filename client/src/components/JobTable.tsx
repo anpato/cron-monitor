@@ -5,10 +5,13 @@ import {
   TableBody,
   TableRow,
   TableColumn,
-  Button
+  Button,
+  FontIcon,
+  AccessibleFakeButton
 } from 'react-md'
 import StatusSnack from './StatusSnack'
 import { RouteChildrenProps } from 'react-router-dom'
+import Job from '../types/job'
 
 interface Jobs {
   headers: string[]
@@ -31,33 +34,38 @@ const JobTable: React.SFC<iProps> = (props: iProps) => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {props.jobs.data.map((job: any) => {
-          // Get Job id here and pass to fake button
-          return (
-            <TableRow key={job.id}>
-              <TableColumn>{job.id}</TableColumn>
-              <TableColumn>{job.name}</TableColumn>
-              <TableColumn>
-                <StatusSnack status={job.status} />
-              </TableColumn>
-              <TableColumn>{job.expression}</TableColumn>
-              <TableColumn>{job.runTime}</TableColumn>
-              <TableColumn>
-                <Button
-                  icon
-                  onClick={() =>
-                    props.history.push({
-                      pathname: `/jobs/edit/${job.id}`,
-                      state: { job }
-                    })
-                  }
-                >
-                  build
-                </Button>
-              </TableColumn>
-            </TableRow>
-          )
-        })}
+        {props.jobs.data.map((job: Job, index: number) => (
+          <TableRow key={job.id}>
+            <TableColumn>{job.id}</TableColumn>
+            <TableColumn>{job.name}</TableColumn>
+            <TableColumn>
+              <StatusSnack status={job.status || 'Pending'} />
+            </TableColumn>
+            <TableColumn>{job.expression}</TableColumn>
+            <TableColumn>{job.runTime}</TableColumn>
+            <TableColumn>
+              <FontIcon
+                primary={job.wantsNotifications}
+                style={{ marginLeft: '1.5rem' }}
+              >
+                alarm_on
+              </FontIcon>
+            </TableColumn>
+            <TableColumn>
+              <Button
+                icon
+                onClick={() =>
+                  props.history.push({
+                    pathname: `/jobs/edit/${job.id}`,
+                    state: { job, index }
+                  })
+                }
+              >
+                build
+              </Button>
+            </TableColumn>
+          </TableRow>
+        ))}
       </TableBody>
     </DataTable>
   )
