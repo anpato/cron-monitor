@@ -8,3 +8,4 @@ export const DB_HOST:string | undefined = process.env.DB_HOST
 export const DATABASE_URL:string | undefined = process.env.DATABASE_URL
 export const SALT_ROUNDS:number = 12
 export const APP_SECRET:string = process.env.APP_SECRET || crypto.randomBytes(15).toString('hex')
+export const NODE_ENV:string | undefined = process.env.NODE_ENV

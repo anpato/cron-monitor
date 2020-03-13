@@ -8,7 +8,6 @@ export const CheckExpression = (req:Request, res:Response, next:NextFunction) =>
 
   if (isValidCron(job.expression)) {
     const nextRun = parser.parseExpression(job.expression)
-    console.log(nextRun.next().toDate())
     res.locals.job = {
       ...job,
       next_run_time: nextRun

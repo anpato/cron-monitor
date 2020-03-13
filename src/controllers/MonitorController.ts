@@ -11,7 +11,7 @@ export default class MonitorController {
     try {
       Job.update({
         ...res.locals.job, status:'Active'
-      }, { returning: true, where:{id: req.params.job_id} }).then((resp:any) => res.send(resp))
+      }, { returning: true, where:{id: req.params.job_id} }).then((resp:any[]) => res.send(resp[0]))
       
     } catch (error) {
       throw error
