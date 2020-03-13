@@ -5,7 +5,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon --config \"nodemon.json\"/",
-    "build": "rm -rf ./build/ && tsc && cd ./client && npm run build",
+    "build": "rm -rf ./build/ && tsc && cd ./client && npm install && npm run build",
     "deploy": "pm2 deploy ecosystem.config.js production",
     "start": "node build/App.js"
   },
