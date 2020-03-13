@@ -1,13 +1,20 @@
-const HashPassword = require('../utils/HashPassword')
-const VerifyPassword = require('../utils/VerifyPassword')
-const AuthController = require('./AuthController')
-const { User } = require('../models')
-
+import { Request, Response, ErrorRequestHandler } from 'express'
+import HashPassword from '../utils/HashPassword'
+import VerifyPassword from '../utils/VerifyPassword'
+import AuthController from './AuthController'
+const { User } = require( '../models')
 const auth = new AuthController()
-class UserController {
-  async index(req, res) {}
 
-  async show(req, res) {
+export interface Payload {
+  userId: string,
+  username: string
+  firstName:string
+}
+
+export default class UserController {
+  // async index(req, res) {}
+
+  async show(req: Request, res: Response) {
     const { username, password } = req.body
     const user = await User.findOne({ where: { username } })
     const canCompare = await VerifyPassword(
@@ -16,7 +23,7 @@ class UserController {
       res
     )
     if (canCompare && user) {
-      const payload = {
+      const payload:Payload = {
         userId: user.dataValues.id,
         username: username,
         firstName: user.dataValues.first_name
@@ -25,12 +32,12 @@ class UserController {
       res.send({ user: payload, token })
     } else {
       let err = new Error('Invalid Credentials')
-      err.status = 400
+      // err.status = 400
       res.status(400).send({ error: err })
     }
   }
 
-  async create(req, res) {
+  async create(req:Request, res:Response) {
     try {
       const { username, password, email, firstName, lastName } = req.body
       const password_digest = await HashPassword(password, res)
@@ -44,10 +51,10 @@ class UserController {
       })
       res.send(user)
     } catch (error) {
-      switch (error.name) {
+      switch (error) {
         case 'SequelizeValidationError':
           const err = new Error('Invalid Email')
-          err.status = 400
+          // err.status = 400
           res.status(400).json({ error: err.message })
         default:
           throw error.message
@@ -55,9 +62,9 @@ class UserController {
     }
   }
 
-  async update(req, res) {}
+  async update(req:Request, res:Response) {}
 
-  async destroy(req, res) {}
+  async destroy(req:Request, res:Response) {}
 }
 
-module.exports = UserController
+

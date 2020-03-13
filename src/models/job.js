@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       name: DataTypes.STRING,
       expression: DataTypes.STRING,
-      run_time: DataTypes.DATE,
+      next_run_time: DataTypes.DATE,
       status: {
         type: DataTypes.ENUM('Pending', 'Active', 'Down'),
         defaultValue: 'Pending',

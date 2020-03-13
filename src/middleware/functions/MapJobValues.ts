@@ -1,5 +1,21 @@
-module.exports = (data, UpperCaser) => {
-  let tableData = {
+interface MappedJob {
+  id: string,
+  name: string,
+  status: string,
+  expression: string,
+  runTime: string,
+  wantsNotifications: boolean,
+  notificationTime: string,
+  timezone: string
+}
+
+interface TableData {
+  headers: string[]
+  data: MappedJob[]
+}
+
+export default (data: any[], UpperCaser: Function) => {
+  let tableData:TableData = {
     headers: [],
     data: []
   }
@@ -18,7 +34,7 @@ module.exports = (data, UpperCaser) => {
         }
       }
     })
-    const obj = {
+    const obj:MappedJob = {
       id: dataValues.id,
       name: dataValues.name,
       status: dataValues.status,

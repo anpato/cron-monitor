@@ -1,12 +1,15 @@
+import { Request, Response } from "express"
+import  UpperCaser from '../middleware/functions/Uppercaser'
+import MapJobValues from '../middleware/functions/MapJobValues'
 const { Job, User } = require('../models')
-const UpperCaser = require('../middleware/functions/Uppercaser')
-const MapJobValues = require('../middleware/functions/MapJobValues')
-module.exports = class JobController {
+
+export default class JobController {
+  public path:string
   constructor() {
     this.path = '/jobs'
   }
 
-  async index(req, res) {
+  async index(req:Request, res:Response) {
     try {
       const jobs = await Job.findAll({
         attributes: [
@@ -29,7 +32,7 @@ module.exports = class JobController {
     }
   }
 
-  async show(req, res) {
+  async show(req:Request, res:Response) {
     try {
       const job = await Job.findOne({
         where: { id: req.params.job_id, user_id: res.locals.user.userId }
@@ -40,7 +43,7 @@ module.exports = class JobController {
     }
   }
 
-  async create(req, res) {
+  async create(req:Request, res:Response) {
     try {
       const {
         user: { userId },
@@ -55,7 +58,7 @@ module.exports = class JobController {
     }
   }
 
-  async update(req, res) {
+  async update(req:Request, res:Response) {
     try {
       const {
         name,
@@ -87,5 +90,5 @@ module.exports = class JobController {
     }
   }
 
-  async destroy(req, res) {}
+  async destroy(req:Request, res:Response) {}
 }
