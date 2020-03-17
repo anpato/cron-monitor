@@ -14,10 +14,17 @@ interface RouteProps {
 export default ({ authenticate, authenticated }: RouteProps) => (
   <main>
     <Switch>
-      <Route
+      {/* <Route
         exact
         path="/"
         render={(props: RouteComponentProps) => <Home {...props} />}
+      /> */}
+      <Route
+        exact
+        path="/"
+        render={(props: RouteComponentProps) => (
+          <Auth {...props} authenticate={authenticate} />
+        )}
       />
       <Route
         exact

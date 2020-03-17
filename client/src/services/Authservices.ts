@@ -19,6 +19,7 @@ export const registerUser = async (
     const resp = await api.post('/auth/register', credentials)
     return resp.status
   } catch (error) {
+    console.log(error)
     throw error
   }
 }

@@ -6,7 +6,7 @@ const AuthRouter = Router()
 const auth = new AuthController()
 const controller = new UserController()
 
-AuthRouter.post('/register', controller.create)
-AuthRouter.post('/login', controller.show)
+AuthRouter.post('/register', controller.register)
+AuthRouter.post('/login', controller.login)
 
 export default { path: auth.path, router: AuthRouter }

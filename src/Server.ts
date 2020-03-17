@@ -34,11 +34,11 @@ export default class Server {
 
   private launchClient() {
     const dir = path.join(__dirname, '../client/build/')
-    this.app.set('views', dir)
-    this.app.use(express.static(dir))
-    this.app.get('*', (req: express.Request, res: express.Response) => {
-      res.sendFile('index.html',{root:dir})
-    })
+    // this.app.set('views', dir)
+    // this.app.use(express.static(dir))
+    // this.app.get('*', (req: express.Request, res: express.Response) => {
+    //   res.sendFile('index.html',{root:dir})
+    // })
   }
 
   private init_routes() {
